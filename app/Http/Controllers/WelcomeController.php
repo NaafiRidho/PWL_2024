@@ -21,4 +21,10 @@ class WelcomeController extends Controller
     public function articles($id){
         return 'Artikel ke- '.$id;
     }
+
+    public function greeting(){
+        return view('blog.hello')
+        ->with('name','Naafi')
+        ->with('occupation','Astronaut');
+    }
 }
