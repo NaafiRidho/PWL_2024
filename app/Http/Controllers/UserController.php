@@ -43,9 +43,15 @@ class UserController extends Controller
         // $user=UserModel::firstWhere('level_id',1);
         // return view('user',['user'=>$user]);
 
-        $user=UserModel::findor(20,['username','name'],function(){
-            abort(404);
-        });
+        // $user=UserModel::findor(20,['username','name'],function(){
+        //     abort(404);
+        // });
+        // return view('user',['user'=>$user]);
+
+        // $user=UserModel::findorfail(1);
+        // return view('user',['user'=>$user]);
+
+        $user=UserModel::where('username','manager9')->firstorfail();
         return view('user',['user'=>$user]);
     }
 }
