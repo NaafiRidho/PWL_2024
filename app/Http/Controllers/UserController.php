@@ -26,15 +26,26 @@ class UserController extends Controller
         // $user = UserModel::all();
         // return view('user', compact('user'));
 
-        $data =[
-            'level_id'=>2,
-            'username'=>'manager_tiga',
-            'name'=>'Manager 3',
-            'password'=>Hash::make('12345')
-        ];
-        UserModel::create($data);
+        // $data =[
+        //     'level_id'=>2,
+        //     'username'=>'manager_tiga',
+        //     'name'=>'Manager 3',
+        //     'password'=>Hash::make('12345')
+        // ];
+        // UserModel::create($data);
 
-        $user = UserModel::all();
+        // $user = UserModel::all();
+        // return view('user',['user'=>$user]);
+
+        // $user=UserModel::where('level_id',1)->first();
+        // return view('user',['user'=>$user]);
+
+        // $user=UserModel::firstWhere('level_id',1);
+        // return view('user',['user'=>$user]);
+
+        $user=UserModel::findor(20,['username','name'],function(){
+            abort(404);
+        });
         return view('user',['user'=>$user]);
     }
 }

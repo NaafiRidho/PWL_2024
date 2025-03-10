@@ -11,14 +11,12 @@
                 <th>Nama</th>
                 <th>ID level Pengguna</th>
             </tr>
-            @foreach ($user as $item)
             <tr>
-                <td>{{$item->user_id}}</td>    
-                <td>{{$item->username}}</td> 
-                <td>{{$item->name}}</td> 
-                <td>{{$item->level_id}}</td>
+                <td>{{$user->user_id}}</td>    
+                <td>{{$user->username}}</td> 
+                <td>{{$user->name}}</td> 
+                <td>{{$user->level_id}}</td>
             </tr>    
-            @endforeach
         </table>
     </body>
 </html>
