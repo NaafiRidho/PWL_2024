@@ -10,13 +10,22 @@
                 <TH>Username</TH>
                 <th>Nama</th>
                 <th>ID level Pengguna</th>
+                <th>Kode Level</th>
+                <th>Nama Level</th>
+                <th>Aksi</th>
             </tr>
+            @foreach ($data as $d)
             <tr>
-                <td>{{$user->user_id}}</td>    
-                <td>{{$user->username}}</td> 
-                <td>{{$user->name}}</td> 
-                <td>{{$user->level_id}}</td>
+                <td>{{$d->user_id}}</td>    
+                <td>{{$d->username}}</td> 
+                <td>{{$d->name}}</td> 
+                <td>{{$d->level_id}}</td>
+                <td>{{$d->level->level_kode}}</td>
+                <td>{{$d->level->level_nama}}</td>
+                <td><a href="{{url('/user/ubah/'.$d->user_id)}}">ubah</a>
+                     <a href="{{url('/user/hapus/'.$d->user_id)}}">hapus</a></td>
             </tr>    
+            @endforeach
         </table>
     </body>
 </html>

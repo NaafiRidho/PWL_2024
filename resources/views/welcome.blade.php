@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
@@ -130,4 +130,30 @@
             </div>
         </div>
     </body>
-</html>
+</html> --}}
+@extends('layout.app');
+
+{{--Customize layout sections--}}
+
+@section('subtitle','welcome')
+@section('content_header_title','Home')
+@section('content_header_subtitle','Welcome')
+
+{{--content body: main page content--}}
+
+@section('content_body')
+    <p>Welcome to this beautiful admin panel</p>
+@stop
+
+{{--Push Extra css--}}
+
+@push('css')
+    {{--add here extra stylesheets--}}
+    {{--<link rel="stylesheets" href="/css/admin_custom.css">--}}
+@endpush
+
+{{--push extra scripts--}}
+
+@push('js')
+    <script>console.log("Hi, I'm using the laravel-adminLTE package!");</script>
+@endpush

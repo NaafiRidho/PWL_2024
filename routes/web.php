@@ -25,10 +25,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/hello', [WelcomeController::class,'hello']);
+Route::get('/hello', [WelcomeController::class, 'hello']);
 
 Route::get('/world', function () {
-   return 'World';
+    return 'World';
 });
 
 
@@ -36,31 +36,46 @@ Route::get('/world', function () {
 //     return 'Nama saya '.$name;
 // });
 
-Route::get('/post/{post}/comments/{comment}', function($postId, $commentId){
-    return 'Post ke- '.$postId.'  Komentar ke- '.$commentId;
+Route::get('/post/{post}/comments/{comment}', function ($postId, $commentId) {
+    return 'Post ke- ' . $postId . '  Komentar ke- ' . $commentId;
 });
 
 Route::get('/index', HomeController::class);
 
 Route::get('/about', AboutController::class);
 
-Route:: get('/articles/{id}',ArticleController::class);
+Route::get('/articles/{id}', ArticleController::class);
 
-Route::resource('photos',PhotoController::class);
+Route::resource('photos', PhotoController::class);
 
-Route::resource('photos', PhotoController::class)->only(['index','show']);
+Route::resource('photos', PhotoController::class)->only(['index', 'show']);
 
-Route::resource('photos', PhotoController::class)->except(['create','store','update','destroy']);
+Route::resource('photos', PhotoController::class)->except(['create', 'store', 'update', 'destroy']);
 
 Route::get('/greeting', function () {
-	return view('blog.hello', ['name' => 'Naafi']);
+    return view('blog.hello', ['name' => 'Naafi']);
 });
 
-Route::get('/greeting', [WelcomeController::class,'greeting']);
+Route::get('/greeting', [WelcomeController::class, 'greeting']);
 
-Route::get('/level',[LevelController::class,'index']);
+Route::get('/level', [LevelController::class, 'index']);
 
-Route::get('/kategori',[KategoriController::class,'index']);
+Route::get('/kategori', [KategoriController::class, 'index']);
 
-Route::get('/user',[UserController::class,'index']);
+Route::get('/user', [UserController::class, 'index']);
 
+Route::get('/user/tambah', [UserController::class, 'tambah']);
+
+Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan']);
+
+Route::get('/user/ubah/{id}', [UserController::class, 'ubah']);
+
+Route::put('/user/ubah_simpan/{id}',[UserController::class, 'ubah_simpan']);
+
+Route::get('/user/hapus/{id}',[UserController::class,'hapus']);
+
+Route::get('/kategori/create',[KategoriController::class,'create']);
+Route::post('/kategori',[KategoriController::class,'store']);
+Route::get('/kategori/{id}/edit',[KategoriController::class,'edit']);
+Route::put('/kategori_update/{id}', [KategoriController::class, 'update']);
+Route::get('/kategori_delete/{id}', [KategoriController::class, 'delete']);

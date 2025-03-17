@@ -78,34 +78,81 @@ class UserController extends Controller
         // $user->save();
         // return view('user',['user'=>$user]);
 
-        $user= UserModel::create([
-            'username'=>'manager55',
-            'name'=>'Manager55',
-            'password'=>Hash::make('12345'),
-            'level_id'=>2
+        // $user= UserModel::create([
+        //     'username'=>'manager55',
+        //     'name'=>'Manager55',
+        //     'password'=>Hash::make('12345'),
+        //     'level_id'=>2
+        // ]);
+
+        // $user->username='manager56';
+
+        // $user->isDirty();
+        // $user->isDirty('username');
+        // $user->isDirty('name');
+        // $user->isDirty(['name','username']);
+
+        // $user->isClean();
+        // $user->isClean('username');
+        // $user->isClean('name');
+        // $user->isClean(['name','username']);
+
+        // $user->save();
+
+        // $user->isDirty();
+        // $user->isClean();
+
+        // $user->wasChanged();
+        // $user->wasChanged('username');
+        // $user->wasChanged(['username','name']);
+        // $user->wasChanged('name');
+        // dd( $user->wasChanged(['username','name']));
+
+        // $user = UserModel::all();
+        // return view('user', ['data' => $user]);
+
+        $user = UserModel::with('level')->get();
+        return view('user',['data'=>$user]);
+    }
+
+    public function tambah()
+    {
+        return view('user_tambah');
+    }
+    public function tambah_simpan(Request $request)
+    {
+        UserModel::create([
+            'username' => $request->username,
+            'name' => $request->name,
+            'password' => Hash::make('$request->password'),
+            'level_id' => $request->level_id
         ]);
+        return redirect('/user');
+    }
 
-        $user->username='manager56';
+    public function ubah($id)
+    {
+        $user = UserModel::find($id);
+        return view('user_ubah', ['data' => $user]);
+    }
 
-        $user->isDirty();
-        $user->isDirty('username');
-        $user->isDirty('name');
-        $user->isDirty(['name','username']);
+    public function ubah_simpan($id, Request $request){
+        $user= UserModel::find($id);
 
-        $user->isClean();
-        $user->isClean('username');
-        $user->isClean('name');
-        $user->isClean(['name','username']);
+        $user->username = $request->username;
+        $user->name = $request->name;
+        $user->password = Hash::make($request->password);
+        $user->level_id = $request->level_id;
 
         $user->save();
 
-        $user->isDirty();
-        $user->isClean();
+        return redirect('/user');
+    }
 
-        $user->wasChanged();
-        $user->wasChanged('username');
-        $user->wasChanged(['username','name']);
-        $user->wasChanged('name');
-        dd( $user->wasChanged(['username','name']));
+    public function hapus($id){
+        $user= UserModel::find($id);
+        $user->delete();
+
+        return redirect('/user');
     }
 }
