@@ -11,7 +11,13 @@ class WelcomeController extends Controller
     }
 
     public function index(){
-        return('Selamat Datang');
+        $breadcrumb =(object)[
+            'title'=>'Selamat Datang',
+            'list' =>['Home','Welcome']
+        ];
+        $activemenu='dashboard';
+
+        return(view('welcome',['breadcrumb'=>$breadcrumb, 'activeMenu'=>$activemenu]));
     }
 
     public function about(){
