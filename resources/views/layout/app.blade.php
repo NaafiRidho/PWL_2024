@@ -1,82 +1,61 @@
-@extends('adminlte::page')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{config('app.name','PWL Laravel Starter Code')}}</title>
 
-{{-- Extend and customize the browser title --}}
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{{asset('AdminLTE/plugins/fontawesome-free/css/all.min.css')}}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{asset('AdminLTE/dist/css/adminlte.min.css')}}">
+</head>
+<body class="hold-transition sidebar-mini">
+<!-- Site wrapper -->
+<div class="wrapper">
+  <!-- Navbar -->
+  @include('layout.header')
+    <!-- /.navbar -->
 
-@section('title')
-    {{ config('adminlte.title') }}
-    @hasSection('subtitle') | @yield('subtitle') @endif
-@stop
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="{{url('/')}}" class="brand-link">
+      <img src="{{asset('AdminLTE/dist/img/AdminLTELogo.png')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">PWL - Starter Code</span>
+    </a>
 
-@vite('resources/js/app.js')
+    <!-- Sidebar -->
+    @include('layout.sidebar')
+    <!-- /.sidebar -->
+  </aside>
 
-{{-- Extend and customize the page content header --}}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    @include('layout.breadcrumb')
 
-@section('content_header')
-    @hasSection('content_header_title')
-        <h1 class="text-muted">
-            @yield('content_header_title')
-            
-            @hasSection('content_header_subtitle')
-                <small class="text-dark">
-                    <i class="fas fa-xs fa-angle-right text-muted"></i>
-                    @yield('content_header_subtitle')
-                </small>
-            @endif
-        </h1>
-    @endif
-@stop
+    <!-- Main content -->
+    <section class="content">
+        @yield('content')
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
 
-{{-- Rename section content to content_body --}}
+  @include('layout.footer')
+</div>
+<!-- ./wrapper -->
 
-@section('content')
-    @yield('content_body')
-@stop
-
-
-{{-- Create a common footer --}}
-
-@section('footer')
-    <div class="float-right">
-        Version: {{ config('app.version', '1.0.0') }}
-    </div>
-
-    <strong>
-        <a href="{{ config('app.company_url', '#') }}">
-            {{ config('app.company_name', 'My company') }}
-        </a>
-    </strong>
-@stop
-
-
-{{-- Add common Javascript/Jquery code --}}
-
-
-
-@push('js')
-<script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
-
-@endpush
-
-@stack('scripts')
-
-
-{{-- Add common CSS customizations --}}
-
-@push('css')
-<link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" />
-
-<style type="text/css">
-
-    {{-- You can add AdminLTE customizations here --}}
-    /*
-    .card-header {
-        border-bottom: none;
-    }
-    .card-title {
-        font-weight: 600;
-    }
-    */
-
-</style>
-
-@endpush
+<!-- jQuery -->
+<script src="{{asset('AdminLTE/plugins/jquery/jquery.min.js')}}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{asset('AdminLte/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{asset('AdminLTE/dist/js/adminlte.min.js')}}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="../../dist/js/demo.js"></script>
+</body>
+</html>
