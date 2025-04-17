@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LevelModel;
 use Illuminate\Http\Request;
 use App\Models\UserModel;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Facades\DataTables;
@@ -130,13 +131,19 @@ class UserController extends Controller
 
         $activeMenu = 'user'; //set menu yang sedang aktif
 
-        return view('user.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        $level= LevelModel::all();
+
+        return view('user.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu,'level'=>$level]);
     }
 
     public function list(Request $request)
     {
         $user = UserModel::select('user_id', 'username', 'name', 'level_id')
             ->with('level');
+        
+        if($request->level_id){
+            $user = $user->where('level_id', $request->level_id);
+        }
         return DataTables::of($user)
             //menambah kolom index /no urut (default nama Kolom: DT_RowIndex)
             ->addIndexColumn()
@@ -145,7 +152,7 @@ class UserController extends Controller
                 detail</a>';
                 $btn .= '<a href="' . url('/user/' . $user->user_id . '/edit') . '" class="btn btn-warning btn-sm">
                 edit</a>';
-                $btn .= '<form class="d-inline-block" method="POST" action="' . url('/' . $user->user_id) . '">';
+                $btn .= '<form class="d-inline-block" method="POST" action="' . url('/user/' . $user->user_id) . '">';
                 $btn .= csrf_field() . method_field('DELETE') .
                     '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';
                 return $btn;
@@ -185,7 +192,7 @@ class UserController extends Controller
             'level_id' => $request->input('level_id'),
             'password' => bcrypt($request->input('password')),
         ]);
-        return redirect()->route('user.index')->with('success', 'Data Berhasil Ditambahkan');
+        return redirect('/user')->with('success', 'Data Berhasil Ditambahkan');
     }
 
     public function show(string $id)
@@ -221,9 +228,10 @@ class UserController extends Controller
         $activeMenu = 'user';
         return view('user.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'user' => $user, 'level' => $level, 'activeMenu' => $activeMenu]);
     }
-    public function update(Request $request, string $id){
+    public function update(Request $request, string $id)
+    {
         $request->validate([
-            'username' => 'required|string|max:3|unique:m_user,username'.$id.',user_id',
+            'username' => 'required|string|min:3|unique:m_user,username,' . $id . ',user_id',
             'name' => 'required|string|max:100',
             'level_id' => 'required|integer',
             'password' => 'nullable|min:5',
@@ -234,19 +242,53 @@ class UserController extends Controller
             'level_id' => $request->input('level_id'),
             'password' => bcrypt($request->input('password')),
         ]);
-        return redirect('/user')->with('success','Data User berhasildiubah');
+        return redirect('/user')->with('success', 'Data User berhasildiubah');
     }
-    public function destroy(string $id){
+    public function destroy(string $id)
+    {
         $user = UserModel::find($id);
-        if(!$user){
-            return redirect('/user')->with('error','Data User tidak ditemukan');
+        if (!$user) {
+            return redirect('/user')->with('error', 'Data User tidak ditemukan');
         }
-        try{
+        try {
             UserModel::destroy($id);
-            return redirect('/user')->with('success','Data User berhasil dihapus');
-        }catch(\Illuminate\Database\QueryException $e){
-            return redirect('/user')->with('error','Data User gagal dihapus');
+            return redirect('/user')->with('success', 'Data User berhasil dihapus');
+        } catch (\Illuminate\Database\QueryException $e) {
+            return redirect('/user')->with('error', 'Data User gagal dihapus');
         }
+    }
+    public function create_ajax(){
+        $level = LevelModel::select('level_id','level_nama')->get();
+
+        return view('user.create_ajax')
+                    ->with('level',$level);
+    }
+    public function store_ajax(Request $request){
+        if($request->ajax()||$request->wantsJson()){
+            $rules =[
+                'username' => 'required|string|min:3|unique:m_user,username',
+                'name' => 'required|string|max:100',
+                'level_id' => 'required|integer',
+                'password' => 'required|min:5',
+            ];
+
+            $validator = Validator::make($request->all(),$rules);
+
+            if($validator->fails()){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Data User gagal disimpan',
+                    'msgFeild'=> $validator->errors(),
+                ]);
+            }
+
+            UserModel::create($request->all());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data User berhasil disimpan',
+            ]);
+        }
+        redirect('/');
     }
     // public function tambah()
     // {

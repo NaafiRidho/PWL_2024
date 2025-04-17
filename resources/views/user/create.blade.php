@@ -41,8 +41,8 @@
       <div class="form-group row">
         <label class="col-1 control-label col-form-label">Nama</label>
         <div class="col-11">
-          <input type="text" class="form-control" id="nama" name="nama" value="{{ old('nama') }}" required>
-          @error('nama')
+          <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
+          @error('name')
             <small class="form-text text-danger">{{ $message }}</small>
           @enderror
         </div>
