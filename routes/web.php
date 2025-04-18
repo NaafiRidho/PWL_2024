@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\BarangController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
@@ -134,5 +135,25 @@ Route::group(['prefix' => 'kategori'], function () {
     Route::delete('/{id}/delete_ajax', [KategoriController::class, 'delete_ajax']);
     Route::get('/{id}/show_ajax',[KategoriController::class,'show_ajax']);
     Route::put('/{id}/detail_ajax',[KategoriController::class,'detail_ajax']);
+
+});
+
+Route::group(['prefix' => 'barang'], function () {
+    Route::get('/', [BarangController::class, 'index']);           // menampilkan halaman awal Level
+    Route::post('/list', [BarangController::class, 'list']);       // menampilkan data Level dalam bentuk json untuk datatables
+    Route::get('/create', [BarangController::class, 'create']);    // menampilkan halaman form tambah Level
+    Route::post('/', [BarangController::class, 'store']);          // menyimpan data Level baru
+    Route::get('/create_ajax',[BarangController::class,'create_ajax']);//menampilkan halaman formtambah Level ajax
+    Route::post('/ajax', [BarangController::class, 'store_ajax']); //menyimpan data Level ajax baru
+    Route::get('/{id}', [BarangController::class, 'show']);        // menampilkan detail Level
+    Route::get('/{id}/edit', [BarangController::class, 'edit']);   // menampilkan halaman form edit Level
+    Route::put('/{id}', [BarangController::class, 'update']);      // menyimpan perubahan data Level
+    Route::get('/{id}/edit_ajax',[BarangController::class,'edit_ajax']);//menampilkan halaman form edit Level ajax
+    Route::put('/{id}/update_ajax', [BarangController::class, 'update_ajax']); //menyimpan perubahan data Level ajax
+    Route::delete('/{id}', [BarangController::class, 'destroy']);  // menghapus data Level
+    Route::get('/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']);
+    Route::delete('/{id}/delete_ajax', [BarangController::class, 'delete_ajax']);
+    Route::get('/{id}/show_ajax',[BarangController::class,'show_ajax']);
+    Route::put('/{id}/detail_ajax',[BarangController::class,'detail_ajax']);
 
 });
