@@ -185,7 +185,7 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
-    Route::middleware(['authorize:MNG'])->group(function () {
+    Route::middleware(['authorize:MNG,ADM'])->group(function () {
         Route::group(['prefix' => 'barang'], function () {
             Route::get('/', [BarangController::class, 'index']);           // menampilkan halaman awal Level
             Route::post('/list', [BarangController::class, 'list']);       // menampilkan data Level dalam bentuk json untuk datatables
