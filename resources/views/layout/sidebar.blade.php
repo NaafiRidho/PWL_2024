@@ -69,6 +69,13 @@
             <p>Transaksi Penjualan</p> 
           </a> 
         </li> 
+
+        <li class="nav-item"> 
+          <a href="{{ url('/logout') }}" class="nav-link bg-danger"> 
+            <i class="nav-icon fas fa-sign-out-alt"></i> 
+            <p>LogOut</p> 
+          </a> 
+        </li> 
   
       </ul> 
     </nav> 
