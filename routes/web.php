@@ -157,6 +157,8 @@ Route::group(['prefix' => 'barang'], function () {
 
 Route::pattern('id', '[0-9]+'); // artinya jika ada parameter id harus berupa angka
 Route::get('login', [AuthController::class, 'login'])->name('login');
+Route::get('register', [AuthController::class, 'register']);
+Route::post('register_post', [AuthController::class, 'register_post']);
 Route::post('login', [AuthController::class, 'postLogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
