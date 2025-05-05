@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
@@ -97,6 +98,10 @@ Route::group(['prefix' => 'user'], function () {
     Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax']);
     Route::get('/{id}/show_ajax', [UserController::class, 'show_ajax']);
     Route::put('/{id}/detail_ajax', [UserController::class, 'detail_ajax']);
+    Route::get('/import', [UserController::class, 'import']);
+    Route::post('/import_ajax', [UserController::class, 'import_ajax']);
+    Route::get('/export_excel', [UserController::class, 'export_excel']);
+    Route::get('/export_pdf', [UserController::class, 'export_pdf']);
 });
 Route::group(['prefix' => 'level'], function () {
     Route::get('/', [LevelController::class, 'index']);           // menampilkan halaman awal Level
@@ -124,7 +129,7 @@ Route::group(['prefix' => 'kategori'], function () {
     Route::post('/', [KategoriController::class, 'store']);          // menyimpan data Level baru
     Route::get('/create_ajax', [KategoriController::class, 'create_ajax']); //menampilkan halaman formtambah Level ajax
     Route::post('/ajax', [KategoriController::class, 'store_ajax']); //menyimpan data Level ajax baru
-    Route::get('/{id}', [KategoriController::class, 'show']);        // menampilkan detail Level
+    // Route::get('/{id}', [KategoriController::class, 'show']);        // menampilkan detail Level
     Route::get('/{id}/edit', [KategoriController::class, 'edit']);   // menampilkan halaman form edit Level
     Route::put('/{id}', [KategoriController::class, 'update']);      // menyimpan perubahan data Level
     Route::get('/{id}/edit_ajax', [KategoriController::class, 'edit_ajax']); //menampilkan halaman form edit Level ajax
@@ -134,6 +139,8 @@ Route::group(['prefix' => 'kategori'], function () {
     Route::delete('/{id}/delete_ajax', [KategoriController::class, 'delete_ajax']);
     Route::get('/{id}/show_ajax', [KategoriController::class, 'show_ajax']);
     Route::put('/{id}/detail_ajax', [KategoriController::class, 'detail_ajax']);
+    Route::get('/import', [KategoriController::class, 'import']);
+    Route::post('/import_ajax', [KategoriController::class, 'import_ajax']);
 });
 
 Route::group(['prefix' => 'barang'], function () {
@@ -165,6 +172,32 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::middleware(['auth'])->group(function () {
     //masukkan semua route yang perlu autentifikasi disini
     Route::get('/', [WelcomeController::class, 'index']);
+    Route::get('/profile', [ProfileController::class, 'index']);
+    Route::post('profile/update-foto', [ProfileController::class, 'updateFoto'])->name('profile.updateFoto');
+
+
+    Route::group(['prefix' => 'user'], function () {
+        Route::get('/', [UserController::class, 'index']);           // menampilkan halaman awal Level
+        Route::post('/list', [UserController::class, 'list']);       // menampilkan data Level dalam bentuk json untuk datatables
+        Route::get('/create', [UserController::class, 'create']);    // menampilkan halaman form tambah Level
+        Route::post('/', [UserController::class, 'store']);          // menyimpan data Level baru
+        Route::get('/create_ajax', [UserController::class, 'create_ajax']); //menampilkan halaman formtambah Level ajax
+        Route::post('/ajax', [UserController::class, 'store_ajax']); //menyimpan data Level ajax baru
+        Route::get('/{id}', [UserController::class, 'show']);        // menampilkan detail Level
+        Route::get('/{id}/edit', [UserController::class, 'edit']);   // menampilkan halaman form edit Level
+        Route::put('/{id}', [UserController::class, 'update']);      // menyimpan perubahan data Level
+        Route::get('/{id}/edit_ajax', [UserController::class, 'edit_ajax']); //menampilkan halaman form edit Level ajax
+        Route::put('/{id}/update_ajax', [UserController::class, 'update_ajax']); //menyimpan perubahan data Level ajax
+        Route::delete('/{id}', [UserController::class, 'destroy']);  // menghapus data Level
+        Route::get('/{id}/delete_ajax', [UserController::class, 'confirm_ajax']);
+        Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax']);
+        Route::get('/{id}/show_ajax', [UserController::class, 'show_ajax']);
+        Route::put('/{id}/detail_ajax', [UserController::class, 'detail_ajax']);
+        Route::get('/import', [UserController::class, 'import']);
+        Route::post('/import_ajax', [UserController::class, 'import_ajax']);
+        Route::get('/export_excel', [UserController::class, 'export_excel']);
+        Route::get('/export_pdf', [UserController::class, 'export_pdf']);
+    });
 
     Route::middleware(['authorize:ADM'])->group(function () {
         Route::group(['prefix' => 'level'], function () {
@@ -205,6 +238,11 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{id}/delete_ajax', [BarangController::class, 'delete_ajax']);
             Route::get('/{id}/show_ajax', [BarangController::class, 'show_ajax']);
             Route::put('/{id}/detail_ajax', [BarangController::class, 'detail_ajax']);
+            Route::get('/import', [BarangController::class, 'import']);
+            Route::post('/import_ajax', [BarangController::class, 'import_ajax']);
+            Route::get('/export_excel', [BarangController::class, 'export_excel']);
+            Route::get('/export_pdf', [BarangController::class, 'export_pdf']);
         });
     });
 });//artinya semua route didalam group ini harus login dulu
+

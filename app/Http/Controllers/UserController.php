@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\UserModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 use function Laravel\Prompts\form;
 
@@ -398,7 +400,131 @@ class UserController extends Controller
         return redirect('/');
     }
 
+    public function import()
+    {
+        return view('user.import'); // TANPA layout, hanya isi modal!
+    }
 
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                // validasi file harus xls atau xlsx, max 1MB
+                'file_user' => ['required', 'mimes:xlsx', 'max:1024']
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $file = $request->file('file_kategori');  // ambil file dari request
+
+            $reader = IOFactory::createReader('Xlsx');  // load reader file excel
+            $reader->setReadDataOnly(true);             // hanya membaca data
+            $spreadsheet = $reader->load($file->getRealPath()); // load file excel
+            $sheet = $spreadsheet->getActiveSheet();    // ambil sheet yang aktif
+
+            $data = $sheet->toArray(null, false, true, true);   // ambil data excel
+
+            $insert = [];
+            if (count($data) > 1) { // jika data lebih dari 1 baris
+                foreach ($data as $baris => $value) {
+                    if ($baris > 1) { // baris ke 1 adalah header, maka lewati
+                        $insert[] = [
+                            'level_id' => $value['A'],
+                            'username' => $value['B'],
+                            'name'     => $value['C'],
+                            'password' => $value['D'],
+                            'created_at' => now(),
+                        ];
+                    }
+                }
+
+                if (count($insert) > 0) {
+                    // insert data ke database, jika data sudah ada, maka diabaikan
+                    UserModel::insertOrIgnore($insert);
+                }
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data berhasil diimport'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tidak ada data yang diimport'
+                ]);
+            }
+        }
+        return redirect('/');
+    }
+
+    public function export_excel()
+    {
+        $user = UserModel::select('level_id', 'username', 'name', 'password')
+            ->orderBy('level_id')
+            ->with('level')
+            ->get();
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet(); //ambil sheet yang aktif
+
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'level_kode');
+        $sheet->setCellValue('C1', 'username');
+        $sheet->setCellValue('D1', 'name');
+        $sheet->setCellValue('E1', 'Password');
+
+        $sheet->getStyle('A1:E1')->getFont()->setBold(true); //bold header
+
+        $no = 1;
+        $baris = 2;
+        foreach ($user as $item => $value) {
+            $sheet->setCellValue('A' . $baris, $no);
+            $sheet->setCellValue('B' . $baris, $value->level->level_kode);//ambil dari level
+            $sheet->setCellValue('C' . $baris, $value->username);
+            $sheet->setCellValue('D' . $baris, $value->name);
+            $sheet->setCellValue('E' . $baris, $value->password);
+            $no++;
+            $baris++;
+        }
+
+        foreach (range('A', 'F') as $columnId) {
+            $sheet->getColumnDimension($columnId)->setAutoSize(true); //set auto size untuk kolom
+        }
+
+        $sheet->setTitle('Data Barang'); //set title sheet
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $fileName = "Data User" . date('Y-m-d H:i:s') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit; // end function export_excel  
+    }
+    public function export_pdf()
+    {
+        $user = UserModel::with('level')->get(); // ambil data barang beserta kategori
+
+        $pdf = FacadePdf::loadView('user.export_pdf', compact('user')); // load view untuk PDF
+        $pdf->setPaper('A4', 'portrait'); // set paper size 
+        $pdf->setOption("isRemoteEnabled", true); // Mengizinkan konten dari URL  
+        $pdf->render();
+
+        return $pdf->stream('Data_Barang' . date('Y-m-d H:i:s') . '.pdf');
+    }
     // public function tambah()
     // {
     //     return view('user_tambah');

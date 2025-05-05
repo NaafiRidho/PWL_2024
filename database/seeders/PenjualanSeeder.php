@@ -18,7 +18,7 @@ class PenjualanSeeder extends Seeder
                 'user_id' => rand(1, 3),
                 'pembeli' => 'pembeli' . $i,
                 'penjualan_kode' => 'PJ' . str_pad($i, 4, '0', STR_PAD_LEFT), // Format kode
-                'penjualan_tanggal' => now()
+                'pejualan_tanggal' => now()
             ]);
         }
     }

@@ -21,7 +21,13 @@
             <p>Dashboard</p> 
           </a> 
         </li>
-  
+
+        <li class="nav-item"> 
+          <a href="{{ url('/profile') }}" class="nav-link {{ ($activeMenu == 'profile') ? 'active' : '' }}"> 
+            <i class="nav-icon fas fa-layer-group"></i> 
+            <p>Profil User</p> 
+          </a> 
+        </li> 
         <li class="nav-header">Data Pengguna</li> 
   
         <li class="nav-item"> 
